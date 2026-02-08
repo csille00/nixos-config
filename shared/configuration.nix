@@ -51,6 +51,7 @@
     curl
     git
     ghostty
+    htop
   ];
 
   nix.gc = {

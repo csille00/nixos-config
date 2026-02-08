@@ -50,6 +50,7 @@
     wget
     curl
     git
+    ghostty
   ];
 
   nix.gc = {

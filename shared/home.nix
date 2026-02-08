@@ -11,7 +11,6 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
-    ghostty
     vscode
     gh
     cascadia-code

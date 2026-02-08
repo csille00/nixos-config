@@ -16,6 +16,7 @@
   # Desktop environment
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.lxqt.enable = true;
+  environment.lxqt.excludePackages = with pkgs.lxqt; [ qterminal ];
 
   users.users.ellisserver = {
     isNormalUser = true;

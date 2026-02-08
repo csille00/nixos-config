@@ -1,0 +1,14 @@
+# Git aliases
+alias gco="git checkout"
+
+# NixOS rebuild function
+# Usage: nixrebuild <hostname>
+# Example: nixrebuild dell-xps
+nixrebuild() {
+    if [ -z "$1" ]; then
+        echo "Usage: nixrebuild <hostname>"
+        echo "Available hosts: dell-xps, ellis-server"
+        return 1
+    fi
+    sudo nixos-rebuild switch --flake ~/nixos-config#"$1"
+}

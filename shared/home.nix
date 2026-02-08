@@ -6,6 +6,7 @@
   home.file = {
     ".config/ghostty/config".source = ../dotfiles/ghostty/config;
     ".config/nvim".source = ../dotfiles/nvim;
+    ".bashrc".source = ../dotfiles/bash/bashrc;
   };
 
   programs.home-manager.enable = true;

@@ -13,8 +13,9 @@
 
   programs.nm-applet.enable = true;
 
-  # Desktop environment
-  services.xserver.displayManager.lightdm.enable = true;
+  # Desktop environments
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
   services.xserver.windowManager.i3.enable = true;
 
   # i3 dependencies

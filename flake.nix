@@ -32,6 +32,10 @@
         name = "ellis-server";
         user = "ellisserver";
       };
+      dell-xps = mkHost {
+        name = "dell-xps";
+        user = "connor-dell";
+      };
     };
   };
 }

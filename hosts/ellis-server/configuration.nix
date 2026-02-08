@@ -24,6 +24,14 @@
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
+  # Tailscale VPN
+  services.tailscale.enable = true;
+  networking.firewall = {
+    enable = true;
+    trustedInterfaces = [ "tailscale0" ];
+    allowedUDPPorts = [ config.services.tailscale.port ];
+  };
+
   # Do not change - tracks initial NixOS install version for stateful data compatibility
   system.stateVersion = "25.11";
 }

@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../shared/configuration.nix
+    ../../modules/immich.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

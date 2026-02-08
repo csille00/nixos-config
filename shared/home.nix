@@ -5,6 +5,7 @@
 
   home.file = {
     ".config/ghostty/config".source = ../dotfiles/ghostty/config;
+    ".config/nvim".source = ../dotfiles/nvim;
   };
 
   programs.home-manager.enable = true;
@@ -15,6 +16,12 @@
     gh
     cascadia-code
     typescript-go
+
+    # LazyVim dependencies
+    fd
+    lazygit
+    lua-language-server
+    stylua
   ];
   
   home.stateVersion = "25.05";

@@ -68,4 +68,15 @@
   };
 
   services.openssh.enable = true;
+
+  # Tailscale VPN
+  services.tailscale = {
+    enable = true;
+    useRoutingFeatures = "server";
+  };
+  networking.firewall = {
+    enable = true;
+    trustedInterfaces = [ "tailscale0" ];
+    allowedUDPPorts = [ config.services.tailscale.port ];
+  };
 }

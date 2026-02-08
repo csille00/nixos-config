@@ -15,10 +15,20 @@
 
   # Desktop environment
   services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.lxqt.enable = true;
-  environment.lxqt.excludePackages = with pkgs.lxqt; [ qterminal ];
+  services.xserver.windowManager.i3.enable = true;
 
-  users.users.ellisserver = {
+  # i3 dependencies
+  environment.systemPackages = with pkgs; [
+    i3blocks
+    i3lock
+    rofi
+    dex
+    xss-lock
+    feh
+    pavucontrol
+  ];
+
+  users.users.connor-dell = {
     isNormalUser = true;
     description = "connor-dell";
     extraGroups = [ "networkmanager" "wheel" ];

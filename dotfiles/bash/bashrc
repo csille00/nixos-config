@@ -1,5 +1,24 @@
 # Git aliases
 alias gco="git checkout"
+alias gpf="git push --force-with-lease"
+alias gpu="git pull"
+alias gpm="git checkout main && git pull"
+alias gca="git commit --amend --no-edit && git push --force-with-lease"
+
+# Project aliases
+alias lint-mobile="cd ~/redo/redo/merchant-mobile/ && yarn format:write && yarn lint:all"
+alias build-mobile="cd ~/redo/redo/merchant-mobile/ && yarn html:build"
+alias m="cd ~/redo/redo/merchant-mobile"
+alias b="bazel build dts"
+alias l="bazel run lint"
+alias local-push="bazel run //redo/scurry:local_push"
+alias schema-sync="bazel run //redo/scurry:schema_sync"
+alias crdb-local="bazel run redo/cockroachdb:listen"
+alias apply-migrations="bazel run tools/prisma -- migrate deploy"
+alias crdb-all="bazel run //redo/scurry:local_push && bazel run //redo/scurry:schema_sync && bazel run tools/prisma -- migrate deploy"
+alias init="bazel run nodejs_install && bazel run npm_resolve"
+alias rb='recent_branches'
+alias recall='__impl_recall'
 
 # NixOS rebuild function
 # Usage: nixrebuild <hostname>
@@ -12,3 +31,68 @@ nixrebuild() {
     fi
     sudo nixos-rebuild switch --flake ~/nixos-config#"$1"
 }
+
+# Git worktree helpers
+wt() {
+  branch="$1"
+  base="${2:-main}"
+  dir="../$(basename "$PWD")--${branch//\//-}"
+  git worktree add -b "$branch" "$dir" "$base"
+  echo "Created worktree: $dir"
+}
+
+recent_branches() {
+  local count=${1:-10}
+  git reflog \
+    | grep 'checkout:' \
+    | awk '{print $NF}' \
+    | awk '{
+        lines[NR] = $0
+      }
+      END {
+        for (i = NR; i > 0; i--) print lines[i]
+      }' \
+    | awk '!seen[$0]++' \
+    | head -n "$count"
+}
+
+__impl_recall() {
+    get_git_recent() {
+        MAX_RESULTS=25
+        recent=$(
+            git reflog show --pretty=format:'%gs ~ %gd' --date=relative |
+            grep 'checkout:' |
+            grep -oE '[^ ]+ ~ .*' |
+            awk -F~ '!seen[$1]++' |
+            awk -F~ '!/^[0-9a-f]{40}/' |
+            head -n $MAX_RESULTS |
+            awk -F' ~ HEAD@{' '{printf("  \033[33m%s: \033[37m %s\033[0m\n", substr($2, 1, length($2)-1), $1)}')
+        echo "$recent"
+    }
+
+    local CURRENT_BRANCH=$(git symbolic-ref --short HEAD)
+    local BRANCH_GREP="${1:-$CURRENT_BRANCH}"
+
+    pipeline_sanitize() {
+        sed -E "s/^.*ago:\s+(.*)$/\1/" | sed -e "s/\x1b\[[0-9;]*m//g" | sed "s/[^[:alnum:]-]//g"
+    }
+
+    local FOUND_BRANCH=$((get_git_recent) | grep "$BRANCH_GREP" -i | head -1 | pipeline_sanitize)
+
+    if [[ $CURRENT_BRANCH == $FOUND_BRANCH ]]; then
+        (get_git_recent) | fzf --ansi --prompt="Branch to recall: " | pipeline_sanitize | xargs -r git checkout
+    else
+        if [[ $(git rev-parse --verify --quiet "$FOUND_BRANCH") ]]; then
+            git checkout $FOUND_BRANCH
+        else
+            echo "Could not find branch similar to '$BRANCH_GREP'"
+        fi
+    fi
+}
+
+# Environment
+export ANDROID_HOME=$HOME/Library/Android
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export PATH=/Users/connorellis/.opencode/bin:$PATH
+
+eval "$(fnm env --use-on-cd)"

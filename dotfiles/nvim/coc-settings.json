@@ -1,3 +1,10 @@
 {
-  "tsserver.maxTsServerMemory": 8192
+  "tsserver.maxTsServerMemory": 8192,
+  "languageserver": {
+    "nil": {
+      "command": "nil",
+      "filetypes": ["nix"],
+      "rootPatterns": ["flake.nix"]
+    }
+  }
 }

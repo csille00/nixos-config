@@ -25,10 +25,10 @@ return {
         "coc-prettier",
       }
 
-      -- Use <tab> and <s-tab> to navigate completion list
+      -- Use <C-n>/<C-p> to navigate completion list, <CR> to confirm
       local opts = { silent = true, noremap = true, expr = true, replace_keycodes = false }
-      vim.keymap.set("i", "<TAB>", [[coc#pum#visible() ? coc#pum#next(1) : "\<TAB>"]], opts)
-      vim.keymap.set("i", "<S-TAB>", [[coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"]], opts)
+      vim.keymap.set("i", "<C-n>", [[coc#pum#visible() ? coc#pum#next(1) : "\<C-n>"]], opts)
+      vim.keymap.set("i", "<C-p>", [[coc#pum#visible() ? coc#pum#prev(1) : "\<C-p>"]], opts)
       vim.keymap.set("i", "<CR>", [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], opts)
 
       -- Trigger completion

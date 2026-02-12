@@ -73,6 +73,7 @@
   services.tailscale = {
     enable = true;
     useRoutingFeatures = "server";
+    permitCertUid = "root";
   };
   networking.firewall = {
     enable = true;

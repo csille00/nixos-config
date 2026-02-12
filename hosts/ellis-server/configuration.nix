@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ../../shared/configuration.nix
     ../../modules/immich.nix
+    ../../modules/audiobookshelf.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

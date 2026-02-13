@@ -36,6 +36,10 @@
         name = "dell-xps";
         user = "connor-dell";
       };
+      framework = mkHost {
+        name = "framework";
+        user = "connor-framework";
+      };
     };
   };
 }

@@ -32,9 +32,18 @@ in
 
   # USB drive auto-mount
   services.udev.extraRules = ''
-    ACTION=="add", ENV{ID_FS_UUID}=="${chinese-tb-drive-from-shopify}", RUN+="${pkgs.util-linux}/bin/mount -o uid=1000,gid=1000 /dev/%k /mnt/usb"
-    ACTION=="remove", ENV{ID_FS_UUID}=="${chinese-tb-drive-from-shopify}", RUN+="${pkgs.util-linux}/bin/umount /mnt/usb"
+    ACTION=="add", ENV{ID_FS_UUID}=="${chinese-tb-drive-from-shopify}", TAG+="systemd", ENV{SYSTEMD_WANTS}="usb-drive-mount.service"
   '';
+
+  systemd.services.usb-drive-mount = {
+    description = "Mount USB drive";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.util-linux}/bin/mount -o uid=1000,gid=1000 /dev/disk/by-uuid/${chinese-tb-drive-from-shopify} /mnt/usb";
+      ExecStop = "${pkgs.util-linux}/bin/umount /mnt/usb";
+      RemainAfterExit = true;
+    };
+  };
 
   systemd.tmpfiles.rules = [
     "d /mnt/usb 0755 root root -"

@@ -39,7 +39,7 @@ in
     description = "Mount USB drive";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.util-linux}/bin/mount -o uid=1000,gid=1000 /dev/disk/by-uuid/${chinese-tb-drive-from-shopify} /mnt/usb";
+      ExecStart = "${pkgs.util-linux}/bin/mount -t ntfs3 -o rw,uid=1000,gid=1000 /dev/disk/by-uuid/${chinese-tb-drive-from-shopify} /mnt/usb";
       ExecStop = "${pkgs.util-linux}/bin/umount /mnt/usb";
       RemainAfterExit = true;
     };

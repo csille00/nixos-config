@@ -37,6 +37,8 @@ in
 
   systemd.services.usb-drive-mount = {
     description = "Mount USB drive";
+    bindsTo = [ "dev-disk-by\\x2duuid-${chinese-tb-drive-from-shopify}.device" ];
+    after = [ "dev-disk-by\\x2duuid-${chinese-tb-drive-from-shopify}.device" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.util-linux}/bin/mount -t ntfs3 -o rw,uid=1000,gid=1000 /dev/disk/by-uuid/${chinese-tb-drive-from-shopify} /mnt/usb";
@@ -48,6 +50,18 @@ in
   systemd.tmpfiles.rules = [
     "d /mnt/usb 0755 root root -"
   ];
+
+  # Immich backup to USB drive (runs automatically when drive is plugged in)
+  systemd.services.immich-backup = {
+    description = "Backup Immich photos to USB drive";
+    requires = [ "usb-drive-mount.service" ];
+    after = [ "usb-drive-mount.service" ];
+    wantedBy = [ "usb-drive-mount.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.rsync}/bin/rsync -av --progress --delete /var/lib/immich/ /mnt/usb/immich/";
+    };
+  };
 
   # Do not change - tracks initial NixOS install version for stateful data compatibility
   system.stateVersion = "25.11";

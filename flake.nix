@@ -7,15 +7,20 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, agenix, ... }:
   let
     mkHost = { name, user, system ? "x86_64-linux", extraModules ? [ ] }:
       nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
           ./hosts/${name}/configuration.nix
+          agenix.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

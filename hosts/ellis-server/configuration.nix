@@ -10,6 +10,7 @@ in
     ../../modules/immich.nix
     ../../modules/audiobookshelf.nix
     ../../modules/libation.nix
+    ../../modules/backup
   ];
 
   boot.loader.systemd-boot.enable = true;

@@ -1,0 +1,79 @@
+// Tailscale ACL Policy
+//
+// Groups:
+//   immediate-family  — full access to all services
+//   extended-family   — access to Audiobookshelf (8000) and Immich (443)
+//   friends           — access to Audiobookshelf only (8000)
+//
+// To add a user to a group, add their Tailscale login email to the group below.
+// To tag a device, go to the Machines tab in the admin console and assign tags.
+//
+// Server ports:
+//   443  — Immich (photo backup)
+//   8000 — Audiobookshelf (audiobooks/podcasts)
+
+{
+	// Define groups of users by Tailscale login email
+	"groups": {
+		"group:immediate-family": [
+			"ellisconnor88@gmail.com",
+			"cassidy.hardisty@gmail.com",
+		],
+		"group:extended-family": [
+			"adrianhardisty.ah@gmail.com",
+			"alisonehardisty@gmail.com",
+		],
+		"group:friends": [
+			// "user@example.com",
+		],
+	},
+
+	// Define which users/groups are allowed to own which tags
+	"tagOwners": {
+		"tag:server":           ["autogroup:admin"],
+		"tag:immediate-family": ["autogroup:admin"],
+		"tag:extended-family":  ["autogroup:admin"],
+		"tag:friends":          ["autogroup:admin"],
+	},
+
+	// ACL rules — order matters; first match wins
+	"acls": [
+		// Admins get full access to everything
+		{
+			"action": "accept",
+			"src":    ["autogroup:admin"],
+			"dst":    ["*:*"],
+		},
+
+		// immediate-family: access to all services (Immich + Audiobookshelf)
+		{
+			"action": "accept",
+			"src":    ["group:immediate-family"],
+			"dst":    ["tag:server:443", "tag:server:8000"],
+		},
+
+		// extended-family: access to Immich and Audiobookshelf
+		{
+			"action": "accept",
+			"src":    ["group:extended-family"],
+			"dst":    ["tag:server:443", "tag:server:8000"],
+		},
+
+		// friends: Audiobookshelf only
+		{
+			"action": "accept",
+			"src":    ["group:friends"],
+			"dst":    ["tag:server:8000"],
+		},
+	],
+
+	// SSH access — only admins and immediate-family can SSH to the server
+	"ssh": [
+		{
+			"action": "accept",
+			"src":    ["autogroup:admin", "group:immediate-family"],
+			"dst":    ["tag:server"],
+			"users":  ["autogroup:nonroot"],
+		},
+	],
+}
